@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace music_manager_start.Data.Models
+namespace music_manager_starter.Data.Models
 {
     public class PlaylistSongJoin
     {
