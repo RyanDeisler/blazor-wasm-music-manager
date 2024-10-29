@@ -27,7 +27,7 @@ namespace music_manager_starter.Server.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Server error in GetSongs: " +e.Message);
+                return StatusCode(500, "Server error in GetSongs: " + e.Message);
             }
         }
 
@@ -50,7 +50,7 @@ namespace music_manager_starter.Server.Controllers
                 return Ok();
             }
             catch (Exception e) { 
-                return StatusCode(500, "Server error in PostSong: " + e.Message)
+                return StatusCode(500, "Server error in PostSong: " + e.Message);
             }
         }
     }
