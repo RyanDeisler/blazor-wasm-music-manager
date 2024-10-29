@@ -21,22 +21,37 @@ namespace music_manager_starter.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Song>>> GetSongs()
         {
-            return await _context.Songs.ToListAsync();
+            try
+            {
+                return await _context.Songs.ToListAsync();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Server error in GetSongs: " +e.Message);
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Song>> PostSong(Song song)
         {
-            if (song == null)
+            try
             {
-                return BadRequest("Song cannot be null.");
+
+
+                if (song == null)
+                {
+                    return BadRequest("Song cannot be null.");
+                }
+
+
+                _context.Songs.Add(song);
+                await _context.SaveChangesAsync();
+
+                return Ok();
             }
-
-
-            _context.Songs.Add(song);
-            await _context.SaveChangesAsync();
-
-            return Ok();
+            catch (Exception e) { 
+                return StatusCode(500, "Server error in PostSong: " + e.Message)
+            }
         }
     }
 }
