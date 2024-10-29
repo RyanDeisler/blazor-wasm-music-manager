@@ -1,0 +1,13 @@
+﻿@page "/playlists"
+@using music_manager_starter.Shared
+
+@inject HttpClient Http
+
+@code {
+    private List<Play> songs;
+
+    protected override async Task OnInitializedAsync()
+    {
+        songs = await Http.GetFromJsonAsync<List<Playlist>>("api/songs");
+    }
+}
