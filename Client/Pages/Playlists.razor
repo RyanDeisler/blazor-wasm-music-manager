@@ -8,11 +8,11 @@
 
     protected override async Task OnInitializedAsync()
     {
-        playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/songs");
+        playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
     }
 }
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
-    <h2 class="text-3xl font-bold text-white mb-8 text-center">Song Library by Ryan!!</h2>
+    <h2 class="text-3xl font-bold text-white mb-8 text-center">Playlists</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         @if (playlists != null && playlists.Count > 0)
         {
