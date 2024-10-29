@@ -31,23 +31,32 @@ namespace music_manager_starter.Server.Controllers
             }
             catch (Exception e)
             { 
-                return StatusCode(500, "Server error: " + e.Message);
+                return StatusCode(500, "Server error in GetPlaylists: " + e.Message);
             }
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult<Song>> PostSong(Song song)
-        //{
-        //    if (song == null)
-        //    {
-        //        return BadRequest("Song cannot be null.");
-        //    }
+        [HttpPost]
+        public async Task<ActionResult<Song>> PostPlaylist(Playlist playlist)
+        {
+            try
+            {
 
 
-        //    _context.Songs.Add(song);
-        //    await _context.SaveChangesAsync();
+                if (playlist == null)
+                {
+                    return BadRequest("Playlist cannot be null.");
+                }
 
-        //    return Ok();
-        //}
+
+                _context.Playlists.Add(playlist);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Server error in PostPlaylist: " + e.Message);
+            }
+        }
     }
 }
