@@ -5,17 +5,73 @@
 
 @code {
     private List<Playlist> playlists;
+    private List<Song> availableSongs;
 
     protected override async Task OnInitializedAsync()
     {
         playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+        availableSongs = await Http.GetFromJsonAsync<List<Song>>("api/songs");
+    }
+
+    private Playlist newPlaylist = new Playlist();
+    private List<Song> SelectedSongs { get; set; } = new List<Song>();
+    private string message;
+
+    private void ToggleSelection(Song song)
+    {
+        if (SelectedSongs.Contains(song))
+        {
+            SelectedSongs.Remove(song);
+        }
+        else
+        {
+            SelectedSongs.Add(song);
+        }
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        SelectedSongs.ForEach((song) => newPlaylist.PlaylistSongJoins.Add(new PlaylistSongJoin
+            {
+                Playlist = newPlaylist,
+                PlaylistId = newPlaylist.Id,
+                SongId = song.Id,
+                Song = song
+            }));
+        var response = await Http.PostAsJsonAsync("api/playlists", newPlaylist);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Playlist added successfully!";
+            newPlaylist = new Playlist();
+        }
+        else
+        {
+            message = "Error adding playlist. Please try again.";
+        }
     }
 }
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-white mb-8 text-center">Playlists</h2>
-    <button class="glass px-4 py-2 text-white hover:scale-105">
-        Add new playlist
-    </button>
+    <EditForm Model="newPlaylist" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-4">
+            <label class="block text-gray-200">Title</label>
+            <InputText @bind-Value="newPlaylist.Title" class="mt-1 block w-full p-2 border rounded" />
+        </div>
+        @foreach (var song in availableSongs)
+        {
+            <div>
+                <input type="checkbox" @onchange="() => ToggleSelection(song)" /> @song.Title
+            </div>
+        }
+
+        <button type="submit" class="bg-purple-600 px-4 py-2 text-white hover:scale-105 rounded">
+            Add new playlist
+        </button>
+    </EditForm>
+
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         @if (playlists != null && playlists.Count > 0)
         {
@@ -34,6 +90,10 @@
         else
         {
             <div class="col-span-1 text-center text-gray-400">No playlists found.</div>
+        }
+        @if (message != null)
+        {
+            <p class="mt-4 text-green-500">@message</p>
         }
     </div>
 </div>

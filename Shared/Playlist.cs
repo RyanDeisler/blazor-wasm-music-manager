@@ -9,7 +9,7 @@ namespace music_manager_starter.Shared
     public sealed class Playlist
 {
         public Guid Id { get; set; }
-        public required string Name { get; set; }
+        public string Name { get; set; }
         public List<PlaylistSongJoin> PlaylistSongJoins { get; set; }
     }
 }
