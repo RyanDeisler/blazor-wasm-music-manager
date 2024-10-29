@@ -21,7 +21,18 @@ namespace music_manager_starter.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Playlist>>> GetPlaylists()
         {
-            return await _context.Playlists.ToListAsync();
+            try
+            {
+                var playlists = await _context.Playlists.ToListAsync();
+                if (playlists == null) {
+                    return NotFound("No playlists found");
+                }
+                return await _context.Playlists.ToListAsync();
+            }
+            catch (Exception e)
+            { 
+                return StatusCode(500, "Server error: " + e.Message);
+            }
         }
 
         //[HttpPost]
