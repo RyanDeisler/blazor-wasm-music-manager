@@ -6,16 +6,18 @@
 @code {
     private List<Playlist> playlists;
     private List<Song> availableSongs;
+    private Playlist newPlaylist = new Playlist();
+    private List<Song> SelectedSongs { get; set; } = new List<Song>();
+    private string message;
 
     protected override async Task OnInitializedAsync()
     {
         playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
         availableSongs = await Http.GetFromJsonAsync<List<Song>>("api/songs");
+        newPlaylist.Songs = new List<string>();
     }
 
-    private Playlist newPlaylist = new Playlist();
-    private List<Song> SelectedSongs { get; set; } = new List<Song>();
-    private string message;
+
 
     private void ToggleSelection(Song song)
     {
@@ -39,7 +41,7 @@
 
         foreach (var selectedSong in SelectedSongs)
         {
-            newPlaylist.Songs.Add(selectedSong);
+            newPlaylist.Songs.Add(selectedSong.Title);
         }
 
         var response = await Http.PostAsJsonAsync("api/playlists", newPlaylist);
@@ -83,9 +85,9 @@
             {
                 <div class="glass p-6 border border-gray-300 rounded-lg text-white transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer">
                     <h3 class="text-xl font-semibold mb-2">@playlist.Name</h3>
-                    @foreach (var song in playlist.Songs)
+                    @for (int i = 0; i < playlist.Songs.Count; i++)
                     {                 
-                    <p class="text-md">Artist: <span class="font-light">@song.Title</span></p>
+                    <p class="text-md">@(i+1). <span class="font-light">@playlist.Songs[i]</span></p>
                     }
 
                 </div>

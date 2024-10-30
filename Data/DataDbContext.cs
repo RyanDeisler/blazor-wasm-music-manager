@@ -43,10 +43,9 @@ namespace music_manager_starter.Data
 
             //firstPlaylist.Add(initialDb.ElementAt(0));
 
-            //Seed data in a playlist
-            //modelBuilder.Entity<Playlist>().HasData([new Playlist { Id = Guid.NewGuid(), Name = "First Playlist", Songs = firstPlaylist}]);
-
             modelBuilder.Entity<Song>().HasData(initialDb);
+
+            modelBuilder.Entity<Playlist>().HasData([new Playlist { Id = Guid.NewGuid(), Name = "Default playlist", Songs = ["Viva la Vida", "Yellow", "Shiver"] }]);
         }
 
     }
