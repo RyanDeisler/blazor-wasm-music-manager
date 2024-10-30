@@ -17,7 +17,7 @@ namespace music_manager_starter.Server.Controllers
             _context = context;
         }
 
-
+        //Get all playlists endpoint
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Playlist>>> GetPlaylists()
         {
@@ -35,13 +35,12 @@ namespace music_manager_starter.Server.Controllers
             }
         }
 
+        //Add a playlist endpoint
         [HttpPost]
-        public async Task<ActionResult<Song>> PostPlaylist(Playlist playlist)
+        public async Task<ActionResult<Playlist>> PostPlaylist(Playlist playlist)
         {
             try
             {
-
-
                 if (playlist == null)
                 {
                     return BadRequest("Playlist cannot be null.");
@@ -59,8 +58,31 @@ namespace music_manager_starter.Server.Controllers
             }
         }
 
+        //Delete a playlist
+        [HttpDelete("api/playlists/{playlistId}")]
+        public async Task<ActionResult> DeletePlaylist(Guid playlistId)
+        {
+            try
+            {
+                var playlist = await _context.Playlists.FindAsync(playlistId);
+                if (playlist == null)
+                {
+                    return NotFound("Could not find this playlist for deletion.");
+                }
+                _context.Playlists.Remove(playlist);
+                await _context.SaveChangesAsync();
+
+                return Ok();
+            }
+            catch (Exception e) 
+            {
+                return StatusCode(500, "Server error in DeletePlaylist: " + e.Message);
+            }
+        }
+
+        //Remove a song from a playlist endpoint
         [HttpDelete("api/playlists/{playlistId}/deleteSong/{songName}")]
-        public async Task<IActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
+        public async Task<ActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
         {
             try
             {
@@ -82,7 +104,7 @@ namespace music_manager_starter.Server.Controllers
             }
             catch (Exception e)
             {
-                return StatusCode(500, "Server error in DeleteSongFromPlaylist: " + e.Message);
+                return StatusCode(500, "Server error in RemoveSongFromPlaylist: " + e.Message);
             }
         }
 

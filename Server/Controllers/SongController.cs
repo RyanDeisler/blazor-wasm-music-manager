@@ -17,7 +17,7 @@ namespace music_manager_starter.Server.Controllers
             _context = context;
         }
 
-  
+        //Get a song endpoint
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Song>>> GetSongs()
         {
@@ -31,19 +31,16 @@ namespace music_manager_starter.Server.Controllers
             }
         }
 
+        //Add a song endpoint
         [HttpPost]
         public async Task<ActionResult<Song>> PostSong(Song song)
         {
             try
             {
-
-
                 if (song == null)
                 {
                     return BadRequest("Song cannot be null.");
                 }
-
-
                 _context.Songs.Add(song);
                 await _context.SaveChangesAsync();
 

@@ -7,6 +7,7 @@
     private List<Playlist> playlists;
     private List<Song> availableSongs;
     private Playlist newPlaylist = new Playlist();
+    //TODO: this can probably removed
     private List<Song> SelectedSongs { get; set; } = new List<Song>();
     private string message;
 
@@ -18,7 +19,8 @@
     }
 
 
-
+    //Add or remove a song to the list of selected songs for adding to a playlist
+    //TODO: can probably just add direclty to newPlaylist.songs
     private void ToggleSelection(Song song)
     {
         if (SelectedSongs.Contains(song))
@@ -32,6 +34,7 @@
 
     }
 
+    //Handle submitting the playlist to the endpoint
     private async Task HandleValidSubmit()
     {
         foreach (var listSong in SelectedSongs)
@@ -88,6 +91,7 @@
                     @for (int i = 0; i < playlist.Songs.Count; i++)
                     {                 
                     <p class="text-md">@(i+1). <span class="font-light">@playlist.Songs[i]</span></p>
+                    <button class="bg-danger">Remove</button>
                     }
                     <button class="bg-danger px-2 py-2 text-white hover:scale-105 rounded">
                         Delete playlist
