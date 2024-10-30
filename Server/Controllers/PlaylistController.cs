@@ -58,5 +58,33 @@ namespace music_manager_starter.Server.Controllers
                 return StatusCode(500, "Server error in PostPlaylist: " + e.Message);
             }
         }
+
+        [HttpDelete("api/playlists/{playlistId}/deleteSong/{songName}")]
+        public async Task<IActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
+        {
+            try
+            {
+                var playlist = await _context.Playlists.FindAsync(playlistId);
+                if (playlist == null)
+                {
+                    return NotFound("Playlist not found");
+                }
+  
+            if (playlist.Songs.Remove(songName))
+            {
+                await _context.SaveChangesAsync();
+                return NoContent();
+            }
+            else
+            {
+                return NotFound("Song not found in playlist");
+            }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Server error in DeleteSongFromPlaylist: " + e.Message);
+            }
+        }
+
     }
 }
