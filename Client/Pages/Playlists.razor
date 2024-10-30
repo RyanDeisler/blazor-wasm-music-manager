@@ -36,12 +36,7 @@
 
     //Handle submitting the playlist to the endpoint
     private async Task HandleValidSubmit()
-    {
-        foreach (var listSong in SelectedSongs)
-        {
-            Console.WriteLine(listSong.Title);
-        }
-
+    {       
         foreach (var selectedSong in SelectedSongs)
         {
             newPlaylist.Songs.Add(selectedSong.Title);
@@ -58,6 +53,20 @@
             message = "Error adding playlist. Please try again.";
         }
     }
+
+    //Handle deleting a playlist
+    private async Task HandlePlaylistDelete(Guid playlistId)
+    {
+        var response = await Http.DeleteAsync("api/playlists/{playlistId}");
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Successfully deleted playlist.";
+        }
+        else
+        {
+            message = "Error while deleting playlist.  Please try again.";
+        }
+    }
 }
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-white mb-8 text-center">Playlists</h2>
@@ -71,7 +80,7 @@
         </div>
         @foreach (var song in availableSongs)
         {
-            <div class="text-gray-200">
+            <div class="text-gray-200" >
                 <input type="checkbox" @onchange="() => ToggleSelection(song)" /> @song.Title
             </div>
         }
@@ -93,7 +102,7 @@
                     <p class="text-md">@(i+1). <span class="font-light">@playlist.Songs[i]</span></p>
                     <button class="bg-danger">Remove</button>
                     }
-                    <button class="bg-danger px-2 py-2 text-white hover:scale-105 rounded">
+                    <button @onclick="() => HandlePlaylistDelete(playlist.Id)" class="bg-danger px-2 py-2 text-white hover:scale-105 rounded">
                         Delete playlist
                     </button>
                 </div>
