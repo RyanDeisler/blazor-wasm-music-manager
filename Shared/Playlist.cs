@@ -10,6 +10,6 @@ namespace music_manager_starter.Shared
 {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<PlaylistSongJoin> PlaylistSongJoins { get; set; }
+        public List<Song> Songs { get; set; }
     }
 }

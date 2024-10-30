@@ -27,17 +27,21 @@
         {
             SelectedSongs.Add(song);
         }
+
     }
 
     private async Task HandleValidSubmit()
     {
-        SelectedSongs.ForEach((song) => newPlaylist.PlaylistSongJoins.Add(new PlaylistSongJoin
-            {
-                Playlist = newPlaylist,
-                PlaylistId = newPlaylist.Id,
-                SongId = song.Id,
-                Song = song
-            }));
+        foreach (var listSong in SelectedSongs)
+        {
+            Console.WriteLine(listSong.Title);
+        }
+
+        foreach (var selectedSong in SelectedSongs)
+        {
+            newPlaylist.Songs.Add(selectedSong);
+        }
+
         var response = await Http.PostAsJsonAsync("api/playlists", newPlaylist);
         if (response.IsSuccessStatusCode)
         {
@@ -57,12 +61,12 @@
         <ValidationSummary />
 
         <div class="mb-4">
-            <label class="block text-gray-200">Title</label>
-            <InputText @bind-Value="newPlaylist.Title" class="mt-1 block w-full p-2 border rounded" />
+            <label class="block text-gray-200">Playlist Name</label>
+            <InputText @bind-Value="newPlaylist.Name" class="mt-1 block w-full p-2 border rounded" />
         </div>
         @foreach (var song in availableSongs)
         {
-            <div>
+            <div class="text-gray-200">
                 <input type="checkbox" @onchange="() => ToggleSelection(song)" /> @song.Title
             </div>
         }
@@ -79,9 +83,9 @@
             {
                 <div class="glass p-6 border border-gray-300 rounded-lg text-white transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer">
                     <h3 class="text-xl font-semibold mb-2">@playlist.Name</h3>
-                    @foreach (var song in playlist.PlaylistSongJoins)
+                    @foreach (var song in playlist.Songs)
                     {                 
-                    <p class="text-md">Artist: <span class="font-light">@song.Song.Title</span></p>
+                    <p class="text-md">Artist: <span class="font-light">@song.Title</span></p>
                     }
 
                 </div>

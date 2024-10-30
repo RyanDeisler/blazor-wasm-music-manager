@@ -11,6 +11,6 @@ namespace music_manager_starter.Data.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public List<PlaylistSongJoin> PlaylistSongJoins { get; set; }
+        public List<Song> Songs { get; set; }
     }
 }

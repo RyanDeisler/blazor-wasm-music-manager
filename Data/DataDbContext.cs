@@ -14,7 +14,7 @@ namespace music_manager_starter.Data
 
         public DbSet<Song> Songs { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
-        public DbSet<PlaylistSongJoin> PlaylistSongJoins { get; set; }
+        //public DbSet<PlaylistSongJoin> PlaylistSongJoins { get; set; }
 
         private List<Song> initialDb = [new Song { Id = Guid.Parse("6f47c84f-4a7d-4e83-8b8f-1829f0eafca3"), Title = "Circle With Me", Artist = "Spiritbox", Album = "Spiritbox", Genre = "Metal" },
                 new Song { Id = Guid.Parse("2a76a0b1-b3e1-4ff0-9aa5-5f5e4c81bc45"), Title = "Notes on a River Town", Artist = "Pony Bradshaw", Album = "Canyon", Genre = "Folk" },
@@ -23,23 +23,28 @@ namespace music_manager_starter.Data
                 new Song { Id = Guid.Parse("42e4b4d5-93bb-4e46-bb6e-c57de62e7f6e"), Title = "When the Party's Over", Artist = "Billie Eilish", Album = "When We All Fall Asleep, Where Do We Go?", Genre = "Pop" },
                 new Song { Id = Guid.Parse("b7cc1c82-77e2-40d0-8bc2-d7e05962c0e3"), Title = "Utah", Artist = "French Cassettes", Album = "The Great Escape", Genre = "Indie" },
                 new Song { Id = Guid.Parse("22aa6f84-06d8-4a0e-bdad-3000b35b5b5f"), Title = "Something Real", Artist = "Post Malone", Album = "Twelve Carat Toothache", Genre = "Hip Hop" }];
+        private List<Song> firstPlaylist = new List<Song>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PlaylistSongJoin>()
-            .HasKey(psj => new { psj.PlaylistId, psj.SongId }); // Composite key
+            //Construct keys for PlaylistSongJoin
+            //modelBuilder.Entity<PlaylistSongJoin>()
+            //.HasKey(psj => new { psj.PlaylistId, psj.SongId }); // Composite key
 
-            modelBuilder.Entity<PlaylistSongJoin>()
-            .HasOne(psj => psj.Playlist) // Each PlaylistSong has one Playlist
-            .WithMany(playlist => playlist.PlaylistSongJoins) // A Playlist can have many PlaylistSongJoins
-            .HasForeignKey(psj => psj.PlaylistId); // Foreign key reference
+            //modelBuilder.Entity<PlaylistSongJoin>()
+            //.HasOne(psj => psj.Playlist) // Each PlaylistSong has one Playlist
+            //.WithMany(playlist => playlist.PlaylistSongJoins) // A Playlist can have many PlaylistSongJoins
+            //.HasForeignKey(psj => psj.PlaylistId); // Foreign key reference
 
-            modelBuilder.Entity<PlaylistSongJoin>()
-            .HasOne(ps => ps.Song) // Each PlaylistSong has one Song
-            .WithMany(s => s.PlaylistSongJoins) // A Song can have many PlaylistSongJoins
-            .HasForeignKey(psj => psj.SongId); // Foreign key reference
+            //modelBuilder.Entity<PlaylistSongJoin>()
+            //.HasOne(ps => ps.Song) // Each PlaylistSong has one Song
+            //.WithMany(s => s.PlaylistSongJoins) // A Song can have many PlaylistSongJoins
+            //.HasForeignKey(psj => psj.SongId); // Foreign key reference
 
-            //modelBuilder.Entity<Playlist>().HasData()
+            //firstPlaylist.Add(initialDb.ElementAt(0));
+
+            //Seed data in a playlist
+            //modelBuilder.Entity<Playlist>().HasData([new Playlist { Id = Guid.NewGuid(), Name = "First Playlist", Songs = firstPlaylist}]);
 
             modelBuilder.Entity<Song>().HasData(initialDb);
         }
