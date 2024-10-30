@@ -58,7 +58,7 @@
 }
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-white mb-8 text-center">Playlists</h2>
-    <EditForm Model="newPlaylist" OnValidSubmit="HandleValidSubmit">
+    <EditForm class="p-4" Model="newPlaylist" OnValidSubmit="HandleValidSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -78,18 +78,20 @@
         </button>
     </EditForm>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+    <div class="px-3 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         @if (playlists != null && playlists.Count > 0)
         {
             @foreach (var playlist in playlists)
             {
-                <div class="glass p-6 border border-gray-300 rounded-lg text-white transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer">
+                <div class="glass p-6 border border-gray-300 rounded-lg text-white transition-transform transform">
                     <h3 class="text-xl font-semibold mb-2">@playlist.Name</h3>
                     @for (int i = 0; i < playlist.Songs.Count; i++)
                     {                 
                     <p class="text-md">@(i+1). <span class="font-light">@playlist.Songs[i]</span></p>
                     }
-
+                    <button class="bg-danger px-2 py-2 text-white hover:scale-105 rounded">
+                        Delete playlist
+                    </button>
                 </div>
             }
         }
