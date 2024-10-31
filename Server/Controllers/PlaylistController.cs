@@ -80,7 +80,7 @@ namespace music_manager_starter.Server.Controllers
             }
         }
 
-        //Remove a song from a playlist endpoint
+        //Remove a song from a playlist at the endpoint
         [HttpDelete("{playlistId}/deleteSong/{songName}")]
         public async Task<ActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
         {
@@ -101,6 +101,28 @@ namespace music_manager_starter.Server.Controllers
                 {
                     return NotFound("Song not found in playlist");
                 }
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, "Server error in RemoveSongFromPlaylist: " + e.Message);
+            }
+        }
+
+        //Add a song to a playlist at the endpoint
+        [HttpDelete("{playlistId}/addSong/{songName}")]
+        public async Task<ActionResult> AddSongToPlaylist(Guid playlistId, string songName)
+        {
+            try
+            {
+                var playlist = await _context.Playlists.FindAsync(playlistId);
+                if (playlist == null)
+                {
+                    return NotFound("Playlist not found");
+                }
+
+                playlist.Songs.Add(songName)                
+                await _context.SaveChangesAsync();
+                return Ok();
             }
             catch (Exception e)
             {
