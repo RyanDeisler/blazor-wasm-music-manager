@@ -92,15 +92,15 @@ namespace music_manager_starter.Server.Controllers
                     return NotFound("Playlist not found");
                 }
   
-            if (playlist.Songs.Remove(songName))
-            {
-                await _context.SaveChangesAsync();
-                return NoContent();
-            }
-            else
-            {
-                return NotFound("Song not found in playlist");
-            }
+                if (playlist.Songs.Remove(songName))
+                {
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                else
+                {
+                    return NotFound("Song not found in playlist");
+                }
             }
             catch (Exception e)
             {
