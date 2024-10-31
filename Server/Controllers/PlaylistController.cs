@@ -59,7 +59,7 @@ namespace music_manager_starter.Server.Controllers
         }
 
         //Delete a playlist
-        [HttpDelete("api/playlists/{playlistId}")]
+        [HttpDelete("{playlistId}")]
         public async Task<ActionResult> DeletePlaylist(Guid playlistId)
         {
             try
@@ -81,7 +81,7 @@ namespace music_manager_starter.Server.Controllers
         }
 
         //Remove a song from a playlist endpoint
-        [HttpDelete("api/playlists/{playlistId}/deleteSong/{songName}")]
+        [HttpDelete("{playlistId}/deleteSong/{songName}")]
         public async Task<ActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
         {
             try
