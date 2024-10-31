@@ -35,6 +35,11 @@
 
     }
 
+    private async void UpdatePlaylists()
+    {
+        playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+    }
+
     //Handle submitting the playlist to the endpoint
     private async Task HandlePlaylistSubmit()
     {       
@@ -48,6 +53,7 @@
         {
             message = "Playlist added successfully!";
             newPlaylist = new Playlist();
+            UpdatePlaylists();
         }
         else
         {
@@ -62,6 +68,7 @@
         if (response.IsSuccessStatusCode)
         {
             message = "Successfully deleted playlist.";
+            UpdatePlaylists();
         }
         else
         {
@@ -76,6 +83,7 @@
         if (response.IsSuccessStatusCode)
         {
             message = "Successfully removed song from playlist.";
+            UpdatePlaylists();
         }
         else
         {
@@ -90,6 +98,7 @@
         if (response.IsSuccessStatusCode)
         {
             message = "Successfully added song to the playlist.";
+            UpdatePlaylists();
         }
         else
         {

@@ -15,16 +15,17 @@
     private void filterSongs(ChangeEventArgs eventArgs)
     {
         var inputValue = eventArgs.Value.ToString();
-        Console.WriteLine(inputValue);
+        songs = songs.Where(song => song.Title.Contains(inputValue)).ToList();
     }
 }
 
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-white mb-8 text-center">Song Library by Ryan</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <input @oninput="filterSongs" type="text" placeholder="Search..." class="bg-gray-700 text-white px-4 py-2 rounded-full focus:outline-none">
         @if (songs != null && songs.Count > 0)
         {
-            <input @oninput="filterSongs" type="text" placeholder="Search..." class="bg-gray-700 text-white px-4 py-2 rounded-full focus:outline-none">
+
             @foreach (var song in songs)
             {
                 <div class="glass p-6 border border-gray-300 rounded-lg text-white transition-transform transform hover:scale-105 hover:shadow-xl cursor-pointer">
