@@ -92,6 +92,7 @@ namespace music_manager_starter.Server.Controllers
                     return NotFound("Playlist not found");
                 }
   
+                //Bugged.  Probably need to find the song with a string comparison?
                 if (playlist.Songs.Remove(songName))
                 {
                     await _context.SaveChangesAsync();

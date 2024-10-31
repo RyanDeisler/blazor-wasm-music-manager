@@ -77,39 +77,54 @@
         }
         catch
         {
-            message = "Something went wrong while deleting a playing!";
+            message = "Something went wrong while deleting a playlist!";
         }
     }
 
     //Handle removing a song from the provided playlist
     private async Task HandleSongRemoval(Guid playlistId, string songName)
     {
-        var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deleteSong/{songName}");
-        if (response.IsSuccessStatusCode)
+        try
         {
-            message = "Successfully removed song from playlist.";
-            playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+            var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deleteSong/{songName}");
+            if (response.IsSuccessStatusCode)
+            {
+                message = "Successfully removed song from playlist.";
+                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+            }
+            else
+            {
+                message = "Error while removing song from playlist.  Please try again.";
+            }
         }
-        else
+        catch
         {
-            message = "Error while removing song from playlist.  Please try again.";
+            message = "Something went wrong while removing a song from a playlist!";
         }
     }
 
     //Handle adding a new song to a playlist
     private async Task HandleAddNewSong(Guid playlistId, string newSongName)
     {
-        var response = await Http.PostAsJsonAsync($"api/playlists/{playlistId}/addSong/{newSongName}", newSongName);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            message = "Successfully added song to the playlist.";
-            playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+            var response = await Http.PostAsJsonAsync($"api/playlists/{playlistId}/addSong/{newSongName}", newSongName);
+            if (response.IsSuccessStatusCode)
+            {
+                message = "Successfully added song to the playlist.";
+                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+            }
+            else
+            {
+                message = "Error while adding song to the playlist.";
+            }
         }
-        else
+        catch
         {
-            message = "Error while adding song to the playlist.";
+            message = "Something went wrong will adding a song to a playlist!";
         }
     }
+    
 }
 
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
