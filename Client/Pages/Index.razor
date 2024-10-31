@@ -15,7 +15,7 @@
     private void filterSongs(ChangeEventArgs eventArgs)
     {
         var inputValue = eventArgs.Value.ToString();
-        songs = songs.Where(song => song.Title.Contains(inputValue)).ToList();
+        songs = songs.Where(song => !string.IsNullOrEmpty(song.Title) && song.Title.Contains(inputValue)).ToList();
     }
 }
 
