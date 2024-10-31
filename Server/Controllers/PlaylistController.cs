@@ -109,7 +109,7 @@ namespace music_manager_starter.Server.Controllers
         }
 
         //Add a song to a playlist at the endpoint
-        [HttpDelete("{playlistId}/addSong/{songName}")]
+        [HttpPost("{playlistId}/addSong/{songName}")]
         public async Task<ActionResult> AddSongToPlaylist(Guid playlistId, string songName)
         {
             try
@@ -120,7 +120,7 @@ namespace music_manager_starter.Server.Controllers
                     return NotFound("Playlist not found");
                 }
 
-                playlist.Songs.Add(songName)                
+                playlist.Songs.Add(songName);     
                 await _context.SaveChangesAsync();
                 return Ok();
             }

@@ -36,7 +36,7 @@
     }
 
     //Handle submitting the playlist to the endpoint
-    private async Task HandleValidSubmit()
+    private async Task HandlePlaylistSubmit()
     {       
         foreach (var selectedSong in SelectedSongs)
         {
@@ -72,7 +72,7 @@
     //Handle removing a song from the provided playlist
     private async Task HandleSongRemoval(Guid playlistId, string songName)
     {
-        var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deletesong/{songName}");
+        var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deleteSong/{songName}");
         if (response.IsSuccessStatusCode)
         {
             message = "Successfully removed song from playlist.";
@@ -82,11 +82,25 @@
             message = "Error while removing song from playlist.  Please try again.";
         }
     }
+
+    //Handle adding a new song to a playlist
+    private async Task HandleAddNewSong(Guid playlistId, string newSongName)
+    {
+        var response = await Http.PostAsJsonAsync($"api/playlists/{playlistId}/addSong/{newSongName}", newSongName);
+        if (response.IsSuccessStatusCode)
+        {
+            message = "Successfully added song to the playlist.";
+        }
+        else
+        {
+            message = "Error while adding song to the playlist.";
+        }
+    }
 }
 
 <div class="p-0 min-h-screen bg-pattern flex flex-col items-center justify-center">
     <h2 class="text-3xl font-bold text-white mb-8 text-center">Playlists</h2>
-    <EditForm class="p-4" Model="newPlaylist" OnValidSubmit="HandleValidSubmit">
+    <EditForm class="p-4" Model="newPlaylist" OnValidSubmit="HandlePlaylistSubmit">
         <DataAnnotationsValidator />
         <ValidationSummary />
 
@@ -125,19 +139,16 @@
                     {
                         <div class="col-span-1 text-center text-gray-400">No songs found in this playlist.</div>
                     }
-                    <EditForm class="p-4" OnValidSubmit="HandleValidSubmit">
-                        <DataAnnotationsValidator />
-                        <ValidationSummary />
 
-                        <div class="mb-4">
-                            <label class="block text-gray-200">Playlist Name</label>
-                            <InputText @bind-Value="newPlaylist.Name" class="mt-1 block w-full p-2 border rounded" />
-                        </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-200">New Song Name</label>
+                        <InputText @bind-Value="newSong" class="mt-1 block w-full p-2 border rounded text-black" />
+                    </div>
 
-                        <button type="submit" class="bg-purple-600 px-4 py-2 text-white hover:scale-105 rounded">
-                            Add this song
-                        </button>
-                    </EditForm>
+                    <button @onclick="() => HandleAddNewSong(playlist.Id, newSong)" class="bg-purple-600 px-4 py-2 text-white hover:scale-105 rounded">
+                        Add this song
+                    </button>
+                    
                     <button @onclick="() => HandlePlaylistDelete(playlist.Id)" class="bg-danger px-2 py-2 block mt-4 text-white hover:scale-105 rounded">
                         Delete playlist
                     </button>
