@@ -13,11 +13,21 @@
     }
 
     //Function for filtering songs by a searchTerm
-    private void filterSongs(ChangeEventArgs eventArgs)
+    private async void filterSongs(ChangeEventArgs eventArgs)
     {
-        var inputValue = eventArgs.Value.ToString();
-        songs = songs.Where(song => !string.IsNullOrEmpty(song.Title) && song.Title.Contains(inputValue)).ToList();
-        Console.WriteLine("inputValue: " + inputValue + ", " + songs);
+        try
+        {
+            //TODO: Bugged so that after searching we have to reload the app.
+            var searchTerm = eventArgs.Value.ToString();
+            songs = songs.Where(song => 
+                song.Title.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                song.Artist.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                song.Album.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+        catch (Exception e)
+        {
+            message = "Something went wrong during the search!";
+        }
     }
 }
 

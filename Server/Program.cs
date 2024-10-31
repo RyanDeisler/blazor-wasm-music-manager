@@ -13,6 +13,8 @@ builder.Services.AddDbContext<DataDbContext>(options => options.UseSqlite(builde
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+//TODO: Make a search for song or playlist service that can be accessed app wide
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

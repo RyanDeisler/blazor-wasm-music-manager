@@ -44,15 +44,24 @@
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("api/songs", newSong);
-        if (response.IsSuccessStatusCode)
+        try
         {
-            message = "Song added successfully!";
-            newSong = new Song(); 
+            var response = await Http.PostAsJsonAsync("api/songs", newSong);
+
+
+            if (response.IsSuccessStatusCode)
+            {
+                message = "Song added successfully!";
+                newSong = new Song();
+            }
+            else
+            {
+                message = "Error adding song. Please try again.";
+            }
         }
-        else
+        catch (Exception e)
         {
-            message = "Error adding song. Please try again.";
+            message = "Something went wrong while adding a new song!";
         }
     }
 }
