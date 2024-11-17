@@ -6,31 +6,32 @@
 @code {
     private List<PlaylistDTO> playlists = new List<PlaylistDTO>();
     private List<SongDTO> availableSongs = new List<SongDTO>();
+    private List<SongDTO> songsToAdd = new List<SongDTO>();
     private PlaylistDTO newPlaylist = new PlaylistDTO();
 
     private string message;
-    private string newSong;
+    private SongDTO newSelectedSong;
 
     protected override async Task OnInitializedAsync()
     {
         playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
         availableSongs = await Http.GetFromJsonAsync<List<SongDTO>>("api/songs");
-        newPlaylist.Songs = new List<string>();
     }
 
 
     //Add or remove a song to the list of selected songs for adding to a playlist
     private void ToggleSelection(SongDTO song)
     {
-        if (newPlaylist.Songs.Contains(song.Title))
+        if (songsToAdd.Contains(song))
         {
-            newPlaylist.Songs.Remove(song.Title);
+            songsToAdd.Remove(song);
         }
         else
         {
-            newPlaylist.Songs.Add(song.Title);
+            songsToAdd.Add(song);
         }
 
+        songsToAdd.ForEach(song => Console.WriteLine(song.Title));       
     }
 
     //Handle submitting the playlist to the endpoint
@@ -43,7 +44,6 @@
             {
                 message = "Playlist added successfully!";
                 newPlaylist = new PlaylistDTO();
-                newPlaylist.Songs = new List<string>();
                 playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
             }
             else
@@ -68,7 +68,6 @@
                 message = "Successfully deleted playlist.";
                 playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
                 newPlaylist = new PlaylistDTO();
-                newPlaylist.Songs = new List<string>();
             }
             else
             {
@@ -82,11 +81,11 @@
     }
 
     //Handle removing a song from the provided playlist
-    private async Task HandleSongRemoval(Guid playlistId, string songName)
+    private async Task HandleSongRemoval(Guid playlistId, Guid songId)
     {
         try
         {
-            var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deleteSong/{songName}");
+            var response = await Http.DeleteAsync($"api/playlists/{playlistId}/deleteSong/{songId}");
             if (response.IsSuccessStatusCode)
             {
                 message = "Successfully removed song from playlist.";
@@ -104,11 +103,11 @@
     }
 
     //Handle adding a new song to a playlist
-    private async Task HandleAddNewSong(Guid playlistId, string newSongName)
+    private async Task HandleAddNewSong(Guid playlistId, Guid newSongId)
     {
         try
         {
-            var response = await Http.PostAsJsonAsync($"api/playlists/{playlistId}/addSong/{newSongName}", newSongName);
+            var response = await Http.PostAsJsonAsync($"api/playlists/{playlistId}/addSong/{newSongId}", newSongId);
             if (response.IsSuccessStatusCode)
             {
                 message = "Successfully added song to the playlist.";
@@ -140,7 +139,7 @@
         @foreach (var song in availableSongs)
         {
             <div class="text-gray-200" >
-                <input type="checkbox" @onchange="() => ToggleSelection(song)" /> @song.Title
+                <input value="@song" type="checkbox" @onchange="() => ToggleSelection(song)" /> @song.Title
             </div>
         }
 
@@ -158,10 +157,12 @@
                     <h3 class="text-xl font-semibold mb-2">@playlist.Name</h3>
                     @if (playlist.Songs != null && playlist.Songs.Count > 0)
                     {
-                        @for (int i = 0; i < playlist.Songs.Count; i++)
+                        var i = 0;
+                        @foreach (var join in playlist.Songs)
                         {
-                            <p class="text-md">@(i+1). <span class="font-light">@playlist.Songs[i]</span></p>
-                            <button @onclick="() => HandleSongRemoval(playlist.Id, playlist.Songs[i-1])" class="bg-danger px-1 py-1 text-white hover:scale-105 rounded">Remove</button>
+                            i++;
+                            <p class="text-md">@(i). <span class="font-light">@join.Song.Title</span></p>
+                            <button @onclick="() => HandleSongRemoval(playlist.Id, join.SongId)" class="bg-danger px-1 py-1 text-white hover:scale-105 rounded">Remove</button>
                         }
                     }
                     else
@@ -169,18 +170,24 @@
                         <div class="col-span-1 text-center text-gray-400">No songs found in this playlist.</div>
                     }
 
-                    <div class="mb-4">
-                        <label class="block text-gray-200">New Song Name</label>
-                        <InputText @bind-Value="newSong" class="mt-1 block w-full p-2 border rounded text-black" />
-                    </div>
+                     <div class="mb-4">
+                         <label class="block text-gray-200">New Song Name</label>
+                        <InputSelect @bind-Value="newSelectedSong">
+                            <option>Select a song!!!!!!</option>
+                            @foreach (var song in playlist.Songs)
+                            {
+                                <option value="@song">@song.Song.Title</option>
+                            }
+                        </InputSelect>
+                     </div>
 
-                    <button @onclick="() => HandleAddNewSong(playlist.Id, newSong)" class="bg-purple-600 px-4 py-2 text-white hover:scale-105 rounded">
-                        Add this song
-                    </button>
+                    <button @onclick="() => HandleAddNewSong(playlist.Id, newSelectedSong.Id)" class="bg-purple-600 px-4 py-2 text-white hover:scale-105 rounded">
+                         Add this song
+                     </button>
                     
-                    <button @onclick="() => HandlePlaylistDelete(playlist.Id)" class="bg-danger px-2 py-2 block mt-4 text-white hover:scale-105 rounded">
-                        Delete playlist
-                    </button>
+                     <button @onclick="() => HandlePlaylistDelete(playlist.Id)" class="bg-danger px-2 py-2 block mt-4 text-white hover:scale-105 rounded">
+                         Delete playlist
+                     </button>
                 </div>
             }
         }

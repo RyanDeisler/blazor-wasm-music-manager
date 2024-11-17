@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using music_manager_starter.Data;
 using music_manager_starter.Data.Models;
+using music_manager_starter.Shared;
 
 namespace music_manager_starter.Server.Controllers
 {
@@ -37,17 +38,18 @@ namespace music_manager_starter.Server.Controllers
 
         //Add a playlist endpoint
         [HttpPost]
-        public async Task<ActionResult<Playlist>> PostPlaylist(Playlist playlist)
+        public async Task<ActionResult<Playlist>> PostPlaylist(PlaylistDTO dto)
         {
             try
             {
-                if (playlist == null)
+                if (dto == null)
                 {
                     return BadRequest("Playlist cannot be null.");
                 }
 
+                var playlistToAdd = new Playlist { Id = dto.Id, Name = dto.Name, Songs = dto.Songs };
 
-                _context.Playlists.Add(playlist);
+                _context.Playlists.Add(playlistToAdd);
                 await _context.SaveChangesAsync();
 
                 return Ok();
@@ -105,6 +107,7 @@ namespace music_manager_starter.Server.Controllers
                 }
 
                 _context.PlaylistSongJoins.Remove(joinToBeDeleted);
+
                 playlist.Songs.Remove(joinToBeDeleted);
                 songToBeRemoved.Playlists.Remove(joinToBeDeleted);
 
@@ -119,7 +122,7 @@ namespace music_manager_starter.Server.Controllers
         }
 
         //Add a song to a playlist at the endpoint
-        [HttpPost("{playlistId}/addSong/{songName}")]
+        [HttpPost("{playlistId}/addSong/{songId}")]
         public async Task<ActionResult> AddSongToPlaylist(Guid playlistId, Guid songId)
         {
             try
@@ -140,6 +143,7 @@ namespace music_manager_starter.Server.Controllers
 
                 playlist.Songs.Add(newJoinEntity);
                 songToBeAdded.Playlists.Add(newJoinEntity);
+
                 _context.PlaylistSongJoins.Add(newJoinEntity);
 
                 await _context.SaveChangesAsync();
