@@ -39,7 +39,7 @@
 </div>
 
 @code {
-    private Song newSong = new Song();
+    private SongDTO newSong = new SongDTO();
     private string message;
 
     private async Task HandleValidSubmit()
@@ -52,7 +52,7 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "Song added successfully!";
-                newSong = new Song();
+                newSong = new SongDTO();
             }
             else
             {

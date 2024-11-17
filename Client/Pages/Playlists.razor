@@ -4,23 +4,23 @@
 @inject HttpClient Http
 
 @code {
-    private List<Playlist> playlists;
-    private List<Song> availableSongs = new List<Song>();
-    private Playlist newPlaylist = new Playlist();
+    private List<PlaylistDTO> playlists = new List<PlaylistDTO>();
+    private List<SongDTO> availableSongs = new List<SongDTO>();
+    private PlaylistDTO newPlaylist = new PlaylistDTO();
 
     private string message;
     private string newSong;
 
     protected override async Task OnInitializedAsync()
     {
-        playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
-        availableSongs = await Http.GetFromJsonAsync<List<Song>>("api/songs");
+        playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
+        availableSongs = await Http.GetFromJsonAsync<List<SongDTO>>("api/songs");
         newPlaylist.Songs = new List<string>();
     }
 
 
     //Add or remove a song to the list of selected songs for adding to a playlist
-    private void ToggleSelection(Song song)
+    private void ToggleSelection(SongDTO song)
     {
         if (newPlaylist.Songs.Contains(song.Title))
         {
@@ -42,9 +42,9 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "Playlist added successfully!";
-                newPlaylist = new Playlist();
+                newPlaylist = new PlaylistDTO();
                 newPlaylist.Songs = new List<string>();
-                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+                playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
             }
             else
             {
@@ -66,8 +66,8 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "Successfully deleted playlist.";
-                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
-                newPlaylist = new Playlist();
+                playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
+                newPlaylist = new PlaylistDTO();
                 newPlaylist.Songs = new List<string>();
             }
             else
@@ -90,7 +90,7 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "Successfully removed song from playlist.";
-                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+                playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
             }
             else
             {
@@ -112,7 +112,7 @@
             if (response.IsSuccessStatusCode)
             {
                 message = "Successfully added song to the playlist.";
-                playlists = await Http.GetFromJsonAsync<List<Playlist>>("api/playlists");
+                playlists = await Http.GetFromJsonAsync<List<PlaylistDTO>>("api/playlists");
             }
             else
             {
