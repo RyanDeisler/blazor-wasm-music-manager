@@ -1,4 +1,6 @@
-﻿namespace music_manager_starter.Shared
+﻿using music_manager_starter.Data.Models;
+
+namespace music_manager_starter.Shared
 {
     public sealed class SongDTO
     {
@@ -7,6 +9,6 @@
         public string Artist { get; set; }
         public string Album { get; set; }
         public string Genre { get; set; }
-        //public List<PlaylistSongJoin> PlaylistSongJoins { get; set; }
+        public List<PlaylistSongJoin> Playlists { get; set; }
     }
 }
