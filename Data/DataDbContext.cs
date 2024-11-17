@@ -14,7 +14,7 @@ namespace music_manager_starter.Data
 
         public DbSet<Song> Songs { get; set; }
         public DbSet<Playlist> Playlists { get; set; }
-        //public DbSet<PlaylistSongJoin> PlaylistSongJoins { get; set; }
+        public DbSet<PlaylistSongJoin> PlaylistSongJoins { get; set; }
 
         private List<Song> initialDb = [new Song { Id = Guid.Parse("6f47c84f-4a7d-4e83-8b8f-1829f0eafca3"), Title = "Circle With Me", Artist = "Spiritbox", Album = "Spiritbox", Genre = "Metal" },
                 new Song { Id = Guid.Parse("2a76a0b1-b3e1-4ff0-9aa5-5f5e4c81bc45"), Title = "Notes on a River Town", Artist = "Pony Bradshaw", Album = "Canyon", Genre = "Folk" },
