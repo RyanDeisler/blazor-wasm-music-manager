@@ -45,7 +45,7 @@ namespace music_manager_starter.Data
 
             modelBuilder.Entity<Song>().HasData(initialDb);
 
-            modelBuilder.Entity<Playlist>().HasData([new Playlist { Id = Guid.NewGuid(), Name = "Default playlist", Songs = ["Viva la Vida", "Yellow", "Shiver"] }]);
+            //modelBuilder.Entity<Playlist>().HasData([new Playlist { Id = Guid.NewGuid(), Name = "Default playlist", Songs = [new PlaylistSongJoin()] }]);
         }
 
     }
