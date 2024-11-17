@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace music_manager_starter.Shared
 {
-    public sealed class Playlist
+    public sealed class PlaylistDTO
 {
         public Guid Id { get; set; }
         public string Name { get; set; }
