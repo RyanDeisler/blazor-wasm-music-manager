@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using music_manager_starter.Data;
 using music_manager_starter.Data.Models;
-using System;
 
 namespace music_manager_starter.Server.Controllers
 {
@@ -24,13 +23,14 @@ namespace music_manager_starter.Server.Controllers
             try
             {
                 var playlists = await _context.Playlists.ToListAsync();
-                if (playlists == null) {
+                if (playlists == null)
+                {
                     return NotFound("No playlists found");
                 }
                 return await _context.Playlists.ToListAsync();
             }
             catch (Exception e)
-            { 
+            {
                 return StatusCode(500, "Server error in GetPlaylists: " + e.Message);
             }
         }
@@ -74,15 +74,15 @@ namespace music_manager_starter.Server.Controllers
 
                 return Ok();
             }
-            catch (Exception e) 
+            catch (Exception e)
             {
                 return StatusCode(500, "Server error in DeletePlaylist: " + e.Message);
             }
         }
 
         //Remove a song from a playlist at the endpoint
-        [HttpDelete("{playlistId}/deleteSong/{songName}")]
-        public async Task<ActionResult> RemoveSongFromPlaylist(Guid playlistId, string songName)
+        [HttpDelete("{playlistId}/deleteSong/{songId}")]
+        public async Task<ActionResult> RemoveSongFromPlaylist(Guid playlistId, Guid songId)
         {
             try
             {
@@ -91,17 +91,26 @@ namespace music_manager_starter.Server.Controllers
                 {
                     return NotFound("Playlist not found");
                 }
-  
-                //TODO: Bugged, when removing a song it always removes the last element.  Problem is in Songs.Remove. Need to find the song with a string comparison?
-                if (playlist.Songs.Remove(songName))
+
+                var songToBeRemoved = await _context.Songs.FindAsync(songId);
+                if (songToBeRemoved == null)
                 {
-                    await _context.SaveChangesAsync();
-                    return Ok();
+                    return NotFound("Song not found");
                 }
-                else
+
+                var joinToBeDeleted = await _context.PlaylistSongJoins.FindAsync(playlistId, songId);
+                if (joinToBeDeleted == null)
                 {
-                    return NotFound("Song not found in playlist");
+                    return NotFound("Join entity not found");
                 }
+
+                _context.PlaylistSongJoins.Remove(joinToBeDeleted);
+                playlist.Songs.Remove(joinToBeDeleted);
+                songToBeRemoved.Playlists.Remove(joinToBeDeleted);
+
+                await _context.SaveChangesAsync();
+                return Ok();
+
             }
             catch (Exception e)
             {
@@ -111,7 +120,7 @@ namespace music_manager_starter.Server.Controllers
 
         //Add a song to a playlist at the endpoint
         [HttpPost("{playlistId}/addSong/{songName}")]
-        public async Task<ActionResult> AddSongToPlaylist(Guid playlistId, string songName)
+        public async Task<ActionResult> AddSongToPlaylist(Guid playlistId, Guid songId)
         {
             try
             {
@@ -121,7 +130,18 @@ namespace music_manager_starter.Server.Controllers
                     return NotFound("Playlist not found");
                 }
 
-                playlist.Songs.Add(songName);     
+                var songToBeAdded = await _context.Songs.FindAsync(songId);
+                if (songToBeAdded == null)
+                {
+                    return NotFound("Song not found");
+                }
+
+                var newJoinEntity = new PlaylistSongJoin { Playlist = playlist, PlaylistId = playlistId, Song = songToBeAdded, SongId = songId };
+
+                playlist.Songs.Add(newJoinEntity);
+                songToBeAdded.Playlists.Add(newJoinEntity);
+                _context.PlaylistSongJoins.Add(newJoinEntity);
+
                 await _context.SaveChangesAsync();
                 return Ok();
             }
